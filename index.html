@@ -3,25 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Memory Game</title>
 
-    <link rel="stylesheet" href="./style.css">
+    <style>
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            max-width: 400px;
+            grid-gap: 5px;
+        }
+    </style>
 </head>
 <body>
 
-    <h1>Chrome Extention </h1>
+    <h3>Score: </h3>
 
-
-    <input type="text" name="" id="input-el">
-    <button id="input-btn">Save input</button>
-    <button id="tab-btn">Tab button</button>
-    <button id="delete-btn">Delete all</button>
-
-    <ul id="ul-el"></ul>
-
-    <!-- <div class="openbox-el">Open the box</div> -->
-     <div id="container-el"></div>
-
+    <div class="grid"></div>
 
     <script src="./index.js"></script>
 </body>

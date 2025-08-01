@@ -1,55 +1,112 @@
-// const openboxEl = document.querySelector(".openbox-el")
+const cardsArr = [
+    {
+        name: "fries",
+        img: "image/fries.png",
+    },
+    {
+        name: "cheeseburger",
+        img: "image/cheeseburger.png"
+    },
+    {
+        name: "hotdog",
+        img: "image/hotdog.png"
+    },
+    {
+        name: "ice-cream",
+        img: "image/ice-cream.png"
+    },
+    {
+        name: "milkshake",
+        img: "image/milkshake.png"
+    },
+    {
+        name: "pizza",
+        img: "image/pizza.png"
+    },
+    {
+        name: "fries",
+        img: "image/fries.png",
+    },
+    {
+        name: "cheeseburger",
+        img: "image/cheeseburger.png"
+    },
+    {
+        name: "hotdog",
+        img: "image/hotdog.png"
+    },
+    {
+        name: "ice-cream",
+        img: "image/ice-cream.png"
+    },
+    {
+        name: "milkshake",
+        img: "image/milkshake.png"
+    },
+    {
+        name: "pizza",
+        img: "image/pizza.png"
+    }
+]
 
-// openboxEl?.addEventListener("click", function() {
-//     console.log("I want to open the box!")
-// })
+cardsArr.sort(() => .5 - Math.random());
 
+const gridEl = document.querySelector(".grid");
 
-const inputEl = document.querySelector("#input-el")
-const inputBtn = document.getElementById("input-btn");
-const ulEl = document.querySelector("#ul-el");
-const deleteBtn = document.querySelector("#delete-btn");
-const tabBtn = document.querySelector("#tab-btn");
+let cardChoose = [];
+let cardIdChoose = [];
+let score = 0;
 
-let myLeads = [];
-
-const leadsFromLocalStorage = JSON.parse(localStorage.getItem("myLeads"));
-
-if(leadsFromLocalStorage) {
-    myLeads = leadsFromLocalStorage;
-
-    renderLeads();
+function createBoard() {
+    for(let i = 0; i < cardsArr.length; i++) {
+        const cardImg = document.createElement("img");
+        cardImg.setAttribute("src", "image/blank.png");
+        cardImg.setAttribute("data-id", i);
+        cardImg.addEventListener("click", cardFlip);
+        gridEl.append(cardImg);
+    }
 }
 
-function renderLeads() {
-    let listItems = "";
+function cardFlip() {
+    if (cardChoose.length >= 2 || this.getAttribute("src") !== "image/blank.png") return;
+    const cardId = this.getAttribute("data-id");
+    cardChoose.push(cardsArr[cardId]);
+    cardIdChoose.push(cardId);
+    this.setAttribute("src", cardsArr[cardId].img);
 
-    for(let i = 0; i < myLeads.length; i++) {
-        listItems += `<li> 
-            <a target="_blank" href="${myLeads[i]}"> ${myLeads[i]} </a>
-        </li>`
+    if (cardChoose.length === 2) {
+        setTimeout(matchCard, 1000);
+    }
+}
+
+function matchCard() {
+    const cards = document.querySelectorAll("img");
+    const firstCardId = cardIdChoose[0];
+    const secondCardId = cardIdChoose[1];
+    const firstCard = cardChoose[0]?.name;
+    const secondCard = cardChoose[1]?.name;
+
+    if(firstCard == secondCard) {
+        cards[firstCardId]?.setAttribute("src", "image/white.png");
+        cards[secondCardId]?.setAttribute("src", "image/white.png");
+        cards[firstCardId]?.removeEventListener("click", cardFlip);
+        cards[secondCardId]?.removeEventListener("click", cardFlip);
+
+        score += 1;
+        document.querySelector("h3").textContent = "Score: " + score
+
+        if (score === cardsArr.length / 2) {
+            alert("Congratulations! You won!");
+        }
+    }else {
+        alert("please try again");
+
+        cards[firstCardId]?.setAttribute("src", "image/blank.png");
+        cards[secondCardId]?.setAttribute("src", "image/blank.png")
     }
 
-    ulEl.innerHTML = listItems;
+    cardChoose = [];
+    cardIdChoose = [];
 }
 
-tabBtn.addEventListener("click", function() {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        console.log(tabs)
-    })
-})
-
-inputBtn.addEventListener("click", function() {
-    let inputValue = inputEl.value;
-    myLeads.push(inputValue);
-    inputEl.value = "";
-
-    localStorage.setItem("myLeads", JSON.stringify(myLeads));
-    renderLeads();
-})
-
-deleteBtn.addEventListener("dblclick", function() {
-    localStorage.clear("myLeads");
-    myLeads = [];
-    renderLeads();
-})
+createBoard();
